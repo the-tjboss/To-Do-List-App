@@ -2,19 +2,24 @@ const inputBox = document.getElementById("input-box");
 const listContainer = document.getElementById("list-container");
 
 function addTask() {
-  if (inputBox.value === "") {
-    alert("you must write somehting here!");
+  const taskText = inputBox.value.trim();
+  if (taskText === "") {
+    alert("You must write something here!");
   } else {
-    let li = document.createElement("li");
-    li.innerHTML = inputBox.value;
-    listContainer.appendChild(li);
-
-    let span = document.createElement("span");
-    span.innerHTML = "   \u00d7"; // cross-sign hex-value
-    li.appendChild(span);
+    createTaskElement(taskText);
   }
   inputBox.value = "";
   saveData();
+}
+
+function createTaskElement(taskText) {
+  let li = document.createElement("li");
+  li.textContent = taskText;
+  listContainer.appendChild(li);
+
+  let span = document.createElement("span");
+  span.innerHTML = "   \u00d7";
+  li.appendChild(span);
 }
 
 listContainer.addEventListener(
@@ -30,10 +35,22 @@ listContainer.addEventListener(
   },
   false
 );
+
+inputBox.addEventListener("keypress", function (e) {
+  if (e.key === "Enter") {
+    addTask();
+  }
+});
+
 function saveData() {
   localStorage.setItem("data", listContainer.innerHTML);
 }
+
 function showTask() {
-  listContainer.innerHTML = localStorage.getItem("data");
+  const data = localStorage.getItem("data");
+  if (data) {
+    listContainer.innerHTML = data;
+  }
 }
+
 showTask();
